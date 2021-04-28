@@ -39,4 +39,26 @@ app.post("/messages", (req, res) => {
 });
 
 
+app.put("/albums/:id", (req, res) => { // partial or full
+    const albumIndex = albumsData
+        .findIndex(album => album.albumId === req.params.id);
 ​
+    if (albumIndex >= 0) { // we have found the number 
+        const origAlbum = albumsData[albumIndex]; //albumIndex is a number
+        const updatedAlbum = req.body;// incoming data
+​
+        // Data validation
+        if (updatedAlbum.albumId &&                                     
+                origAlbum.albumId !== updatedAlbum.albumId) {  // partial update 
+            res.status(400); // Bad request
+            res.send({"message": "album IDs don't match"});   
+        } else {
+            albumsData[albumIndex] = {...origAlbum, ...updatedAlbum}; 
+            res.send(albumsData[albumIndex]);
+        }
+    } else {
+        res.status(404); // Not found
+        res.send({"message": "no such album"});
+    }
+});
+
