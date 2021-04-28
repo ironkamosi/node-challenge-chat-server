@@ -62,3 +62,10 @@ app.put("/albums/:id", (req, res) => { // partial or full
     }
 });
 
+// else if (origMessage.from !== updatedMessage.from){
+//       res.status(401); // Not found
+//       res.send({ message: "unauthorised access, can not change from field!" });
+// }else if (origMessage.timeSent !== updatedMessage.timeSent){
+//       res.status(401); // Not found
+//       res.send({ message: "unauthorised access!" });
+//     }

@@ -29,7 +29,7 @@ app.post("/messages", (req, res) => {
     res.send({ message: "bad data" });
   } else {
     welcomeMessage.push(newMessage);
-    newMessage.timeSent = new Date(); // level 4 
+    newMessage.timeSent = new Date(); // level 4
     res.status(201);
     // res.send(newMessage);
   }
@@ -55,12 +55,11 @@ function search(term, welcomeMessage) {
   return welcomeMessage.filter((message) => message.text.includes(term));
 }
 
-
 // Read- most recent 10 messages -lv3
 app.get("/messages/latest", function (request, response) {
-const latestMessage = latest(welcomeMessage)
-response.send(latestMessage);
-console.log(latestMessage)
+  const latestMessage = latest(welcomeMessage);
+  response.send(latestMessage);
+  console.log(latestMessage);
 });
 
 function latest(arr) {
@@ -91,54 +90,67 @@ app.get("/messages/:id", (req, res) => {
  Your server should NOT update the timeSent timestamp property 
  during an update, if the client passes it back to you.
  */
-app.put("/messages/:id", (req, res) => { // partial or full
-  const messageIndex = welcomeMessage.findIndex(message => 
-    message.id === parseInt(req.params.id) // string to number   
+app.put("/messages/:id", (req, res) => {
+  // partial or full
+  const newMessage = req.body;
+  const messageIndex = welcomeMessage.findIndex(
+    (message) => message.id === parseInt(req.params.id) // string to number
   );
-  console.log(messageIndex)
-    if (messageIndex >= 0) { // we have found the number 
-        const origMessage = welcomeMessage[messageIndex]; //messageIndex is a number
-        const updatedMessage = req.body;// incoming data
-
-        // Data validation
-        if (updatedMessage.id &&                                     
-                (origMessage.id !== updatedMessage.id)) {   // partial update 
-            res.status(400); // Bad request
-            res.send({"message": "message IDs do not match"});   
-        } else {
-            welcomeMessage[messageIndex] = {...origMessage, ...updatedMessage}; 
-            res.send(welcomeMessage[messageIndex]);
-        }
-    } else if (messageIndex === NaN) {
-    res.sendStatus(400)
-    } else {
-      res.status(404); // Not found
-      res.send({ message: "no such id exists" });
+  console.log(messageIndex);
+  if (messageIndex >= 0) {
+    // we have found the number
+    const origMessage = welcomeMessage[messageIndex]; //messageIndex is a number
+    const updatedMessage = req.body; // incoming data
+    // Data validation
+    if (updatedMessage.id && origMessage.id !== updatedMessage.id) {
+      // partial update
+      res.status(400); // Bad request
+      res.send({ message: "message IDs do not match" });
+    } else if (origMessage.from !== updatedMessage.from) {
+      res.status(401); // Not found
+      res.send({
+        message: "unauthorised access, can not change the from field!",
+      });
+    } else if (updatedMessage.timeSent) {
+      res.status(401); // Not found
+      res.send({
+        message: "unauthorised access, can not change the time field!",
+      });
     }
+      else {
+      welcomeMessage[messageIndex] = { ...origMessage, ...updatedMessage };
+        fs.writeFileSync(
+          "./data.json",
+          JSON.stringify(welcomeMessage),
+          () => {}
+        );
+      welcomeMessage.push(newMessage);
+      res.sendStatus(201)
+      res.send(welcomeMessage[messageIndex]);
+    }
+  } else if (messageIndex === NaN) {
+    res.sendStatus(400);
+  } else {
+    res.status(404); // Not found
+    res.send({ message: "no such id exists" });
+  }
 });
 //Update
-
-
-
-
-
-
-
 
 // ​app.put("/messages/:id", (req, res) => { // partial or full
 //     const messageIndex = welcomeMessage.findIndex(message => message.id === req.params.id);
 // ​    console.log(messageIndex)
-//     if (messageIndex >= 0) { // we have found the number 
+//     if (messageIndex >= 0) { // we have found the number
 //         const origMessage = welcomeMessage[messageIndex]; //albumIndex is a number
 //         const updatedMessage = req.body;// incoming data
 // ​
 //         // Data validation
-//         if (updatedMessage.id &&                                     
-//                 origMessage.id !== updatedMessage.id) {  // partial update 
+//         if (updatedMessage.id &&
+//                 origMessage.id !== updatedMessage.id) {  // partial update
 //             res.status(400); // Bad request
-//             res.send({"message": "Message IDs do not match"});   
+//             res.send({"message": "Message IDs do not match"});
 //         } else {
-//             welcomeMessage[messageIndex] = {...origMessage, ...updatedMessage}; 
+//             welcomeMessage[messageIndex] = {...origMessage, ...updatedMessage};
 //             res.send(welcomeMessage[messageIndex]);
 //         }
 //     } else {
@@ -146,9 +158,6 @@ app.put("/messages/:id", (req, res) => { // partial or full
 //         res.send({"message": "no such album"});
 //     }
 // });
-
-
-
 
 // Delete
 app.delete("/messages/:id", (req, res) => {
