@@ -69,3 +69,26 @@ app.put("/albums/:id", (req, res) => { // partial or full
 //       res.status(401); // Not found
 //       res.send({ message: "unauthorised access!" });
 //     }
+
+
+// create 
+
+app.post("/messages", (req, res) => {
+  const newMessage = req.body;
+  console.log("req body", req.body);
+  if (welcomeMessage.find((element) => element.id == newMessage.id)) {
+    // make sure id does not exist
+    res.status(400);
+    res.send({ message: "invalid id already exist" });
+  } else if (!newMessage.id || !newMessage.from || !newMessage.text) {
+    res.status(400); // level 2
+    res.send({ message: "bad data" });
+  } else {
+    welcomeMessage.push(newMessage);
+    newMessage.timeSent = new Date(); // level 4
+    res.status(201);
+    // res.send(newMessage);
+  }
+  fs.writeFileSync("./data.json", JSON.stringify(welcomeMessage), () => {});
+  res.send(newMessage);
+});

@@ -18,18 +18,16 @@ app.get("/", function (request, response) {
 
 //Create
 app.post("/messages", (req, res) => {
-  const newMessage = req.body;
+  let newMessage = req.body;
   console.log("req body", req.body);
-  if (welcomeMessage.find((element) => element.id == newMessage.id)) {
-    // make sure id does not exist
-    res.status(400);
-    res.send({ message: "invalid id already exist" });
-  } else if (!newMessage.id || !newMessage.from || !newMessage.text) {
+  if (!newMessage.from || !newMessage.text) {
     res.status(400); // level 2
     res.send({ message: "bad data" });
   } else {
-    welcomeMessage.push(newMessage);
+    const id = parseInt(welcomeMessage[welcomeMessage.length - 1].id) + 1; // adds 1 to the last index
+    newMessage = { id, ...newMessage };
     newMessage.timeSent = new Date(); // level 4
+    welcomeMessage.push(newMessage); // id from text
     res.status(201);
     // res.send(newMessage);
   }
