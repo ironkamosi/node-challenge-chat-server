@@ -5,12 +5,12 @@ const welcomeMessage = require("./data.json");
 const fs = require("fs"); // feature to read&Write files
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
 //This array is our "data store".
 //We will start with one message in the array.
 //Note: messages will be lost when Glitch restarts our server.
-const messages = [welcomeMessage];
+
 
 app.get("/", function (request, response) {
   response.sendFile(__dirname + "/index.html");
@@ -65,7 +65,6 @@ function latest(arr) {
 }
 
 // Read- the most recent 10 messages -lv 3
-
 // Read- (id)
 app.get("/messages/:id", (req, res) => {
   const messageId = welcomeMessage.find((message) => {
@@ -80,14 +79,7 @@ app.get("/messages/:id", (req, res) => {
   }
 });
 
-/**
-  add support for the client to be able to update 
-  a message's text or from property. We'll cover this 
-  in the next week of the module, but you can research it easily.
-
- Your server should NOT update the timeSent timestamp property 
- during an update, if the client passes it back to you.
- */
+//update 
 app.put("/messages/:id", (req, res) => {
   // partial or full
   const newMessage = req.body;
@@ -114,16 +106,11 @@ app.put("/messages/:id", (req, res) => {
       res.send({
         message: "unauthorised access, can not change the time field!",
       });
-    }
-      else {
+    } else {
       welcomeMessage[messageIndex] = { ...origMessage, ...updatedMessage };
-        fs.writeFileSync(
-          "./data.json",
-          JSON.stringify(welcomeMessage),
-          () => {}
-        );
+      fs.writeFileSync("./data.json", JSON.stringify(welcomeMessage), () => {});
       welcomeMessage.push(newMessage);
-      res.sendStatus(201)
+      res.sendStatus(201);
       res.send(welcomeMessage[messageIndex]);
     }
   } else if (messageIndex === NaN) {
@@ -133,29 +120,6 @@ app.put("/messages/:id", (req, res) => {
     res.send({ message: "no such id exists" });
   }
 });
-//Update
-
-// ​app.put("/messages/:id", (req, res) => { // partial or full
-//     const messageIndex = welcomeMessage.findIndex(message => message.id === req.params.id);
-// ​    console.log(messageIndex)
-//     if (messageIndex >= 0) { // we have found the number
-//         const origMessage = welcomeMessage[messageIndex]; //albumIndex is a number
-//         const updatedMessage = req.body;// incoming data
-// ​
-//         // Data validation
-//         if (updatedMessage.id &&
-//                 origMessage.id !== updatedMessage.id) {  // partial update
-//             res.status(400); // Bad request
-//             res.send({"message": "Message IDs do not match"});
-//         } else {
-//             welcomeMessage[messageIndex] = {...origMessage, ...updatedMessage};
-//             res.send(welcomeMessage[messageIndex]);
-//         }
-//     } else {
-//         res.status(404); // Not found
-//         res.send({"message": "no such album"});
-//     }
-// });
 
 // Delete
 app.delete("/messages/:id", (req, res) => {
@@ -165,11 +129,10 @@ app.delete("/messages/:id", (req, res) => {
   if (messageIndex >= 0) {
     welcomeMessage.splice(messageIndex, 1);
   }
+  fs.writeFileSync("./data.json", JSON.stringify(welcomeMessage), () => {});
   res.status(204); // No data
   res.end(); // Response body is empty
 });
-
-//
 
 const PORT = 4003;
 app.listen(PORT, () => console.log(`Your app is listening ...${PORT}`));

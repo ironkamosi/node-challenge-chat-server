@@ -55,43 +55,10 @@
         "text": "I find watching snooker relaxing"
     },
     {
-        "id": 11,
-        "from": "Maria",
-        "text": "I speak 3 languages, but I prefer to speak Spanish to express myself"
-    },
-    {
-        "id": 12,
-        "from": "Zev",
-        "text": "My favourite country is Spain because its filled with history and culture."
-    },
-    {
-        "id": 14,
-        "from": "Wain",
-        "text": "I love the new Streets of Rage 4 game. I have waited 26 years for a sequel for the last game"
-    },
-    {
-        "id": 15,
-        "from": "Kung lao",
-        "text": "Be like water",
-        "timeSent": "2021-04-27T15:27:29.373Z"
-    },
-    {
-        "id": 16,
-        "from": "Kate",
-        "text": "What's your favourite film?",
-        "timeSent": "2021-04-27T15:31:46.462Z"
-    },
-    {
         "id": 17,
         "from": "Jane",
         "text": "Do you have the time?",
         "timeSent": "2021-04-27T15:32:49.841Z"
-    },
-    {
-        "id": 19,
-        "from": "Sam",
-        "text": "I am happy ",
-        "timeSent": "2021-04-28T12:58:43.170Z"
     },
     {
         "id": 20,
@@ -122,5 +89,41 @@
         "from": "Sarah",
         "text": "Music is the ulitimate form of expression",
         "timeSent": "2021-04-29T13:26:42.552Z"
+    },
+    {
+        "id": 25,
+        "from": "Nathan",
+        "text": "I like listening MF DOOM",
+        "timeSent": "2021-04-29T15:15:07.305Z"
+    },
+    {
+        "id": 26,
+        "from": "James",
+        "text": "Hello everybody",
+        "timeSent": "2021-04-29T18:03:32.139Z"
+    },
+    {
+        "id": 27,
+        "from": "Cecilia",
+        "text": "Hola come estas?",
+        "timeSent": "2021-04-30T12:20:07.643Z"
+    },
+    {
+        "id": 28,
+        "from": "Olivia",
+        "text": "where are from?",
+        "timeSent": "2021-04-30T12:20:27.421Z"
+    },
+    {
+        "id": 29,
+        "from": "Eneritz",
+        "text": "I am from Pais Vasco",
+        "timeSent": "2021-04-30T16:54:59.589Z"
+    },
+    {
+        "id": 30,
+        "from": "Aaron",
+        "text": "I love Spain",
+        "timeSent": "2021-04-30T16:55:31.550Z"
     }
 ]
