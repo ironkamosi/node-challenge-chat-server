@@ -134,5 +134,5 @@ app.delete("/messages/:id", (req, res) => {
   res.end(); // Response body is empty
 });
 
-const PORT = 4003;
+const PORT = process.env.PORT||4003;
 app.listen(PORT, () => console.log(`Your app is listening ...${PORT}`));
