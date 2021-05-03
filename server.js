@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const welcomeMessage = require("./data.json");
+const messageDataBase = require("./data.json");
 
 const fs = require("fs"); // feature to read&Write files
 const app = express();
@@ -24,38 +24,38 @@ app.post("/messages", (req, res) => {
     res.status(400); // level 2
     res.send({ message: "bad data" });
   } else {
-    const id = parseInt(welcomeMessage[welcomeMessage.length - 1].id) + 1; // adds 1 to the last index
+    const id = parseInt(messageDataBase[messageDataBase.length - 1].id) + 1; // adds 1 to the last index
     newMessage = { id, ...newMessage };
     newMessage.timeSent = new Date(); // level 4
-    welcomeMessage.push(newMessage); // id from text
+    messageDataBase.push(newMessage); // id from text
     res.status(201);
     // res.send(newMessage);
   }
-  fs.writeFileSync("./data.json", JSON.stringify(welcomeMessage), () => {});
+  fs.writeFileSync("./data.json", JSON.stringify(messageDataBase), () => {});
   res.send(newMessage);
 });
 
 // Read - gets all messages
 app.get("/messages", function (request, response) {
-  console.log(welcomeMessage);
-  response.send(welcomeMessage);
+  console.log(messageDataBase);
+  response.send(messageDataBase);
 });
 
 // Read- messages with substring express -lv 3
 app.get("/messages/search", function (request, response) {
   const searchTerm = request.query.term;
-  const result = search(searchTerm, welcomeMessage);
+  const result = search(searchTerm, messageDataBase);
   response.send(result);
 });
 
-function search(term, welcomeMessage) {
+function search(term, messageDataBase) {
   console.log("hello");
-  return welcomeMessage.filter((message) => message.text.includes(term));
+  return messageDataBase.filter((message) => message.text.includes(term));
 }
 
 // Read- most recent 10 messages -lv3
 app.get("/messages/latest", function (request, response) {
-  const latestMessage = latest(welcomeMessage);
+  const latestMessage = latest(messageDataBase);
   response.send(latestMessage);
   console.log(latestMessage);
 });
@@ -67,7 +67,7 @@ function latest(arr) {
 // Read- the most recent 10 messages -lv 3
 // Read- (id)
 app.get("/messages/:id", (req, res) => {
-  const messageId = welcomeMessage.find((message) => {
+  const messageId = messageDataBase.find((message) => {
     return message.id == req.params.id;
   });
 
@@ -83,13 +83,13 @@ app.get("/messages/:id", (req, res) => {
 app.put("/messages/:id", (req, res) => {
   // partial or full
   const newMessage = req.body;
-  const messageIndex = welcomeMessage.findIndex(
+  const messageIndex = messageDataBase.findIndex(
     (message) => message.id === parseInt(req.params.id) // string to number
   );
   console.log(messageIndex);
   if (messageIndex >= 0) {
     // we have found the number
-    const origMessage = welcomeMessage[messageIndex]; //messageIndex is a number
+    const origMessage = messageDataBase[messageIndex]; //messageIndex is a number
     const updatedMessage = req.body; // incoming data
     // Data validation
     if (updatedMessage.id && origMessage.id !== updatedMessage.id) {
@@ -107,11 +107,11 @@ app.put("/messages/:id", (req, res) => {
         message: "unauthorised access, can not change the time field!",
       });
     } else {
-      welcomeMessage[messageIndex] = { ...origMessage, ...updatedMessage };
-      fs.writeFileSync("./data.json", JSON.stringify(welcomeMessage), () => {});
-      welcomeMessage.push(newMessage);
+      messageDataBase[messageIndex] = { ...origMessage, ...updatedMessage };
+      fs.writeFileSync("./data.json", JSON.stringify(messageDataBase), () => {});
+      messageDataBase.push(newMessage);
       res.sendStatus(201);
-      res.send(welcomeMessage[messageIndex]);
+      res.send(messageDataBase[messageIndex]);
     }
   } else if (messageIndex === NaN) {
     res.sendStatus(400);
@@ -123,13 +123,13 @@ app.put("/messages/:id", (req, res) => {
 
 // Delete
 app.delete("/messages/:id", (req, res) => {
-  const messageIndex = welcomeMessage.findIndex(
+  const messageIndex = messageDataBase.findIndex(
     (message) => message.id == req.params.id
   );
   if (messageIndex >= 0) {
-    welcomeMessage.splice(messageIndex, 1);
+    messageDataBase.splice(messageIndex, 1);
   }
-  fs.writeFileSync("./data.json", JSON.stringify(welcomeMessage), () => {});
+  fs.writeFileSync("./data.json", JSON.stringify(messageDataBase), () => {});
   res.status(204); // No data
   res.end(); // Response body is empty
 });
